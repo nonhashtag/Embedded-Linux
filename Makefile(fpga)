@@ -1,0 +1,25 @@
+obj-m	:= fpga_push_switch_driver.o
+
+KDIR	:=/root/work/achroimx6q/kernel
+PWD	:=$(shell pwd)
+
+all: driver app
+driver:
+	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules ARCH=arm
+app:
+	#arm-none-linux-gnueabi-gcc -static -o fpga_test_push_switch fpga_test_push_switch.c
+	#arm-none-linux-gnueabi-gcc -static -o switch_modify switch_modify.c
+	arm-none-linux-gnueabi-g++ -I/root/work/OPENCV/opencv-2.4.13/build/install/include -L/root/work/OPENCV/opencv-2.4.13/build/install/lib switch_modify.c -lopencv_calib3d -lopencv_contrib -lopencv_core -lopencv_features2d -lopencv_flann -lopencv_gpu -lopencv_highgui -lopencv_imgproc -lopencv_legacy -lopencv_ml -lopencv_nonfree -lopencv_objdetect -lopencv_ocl -lopencv_photo -lopencv_stitching -lopencv_superres -lopencv_ts -lopencv_video -lopencv_videostab -lrt -lpthread -lm -ldl -o switch_modify
+
+install:
+	cp -a fpga_push_switch_driver.ko /root/work
+	cp -a switch_modify /root/work
+clean:
+	rm -rf *.ko
+	rm -rf *.mod.*
+	rm -rf *.o
+	rm -rf fpga_test_push_switch
+	rm -rf Module.symvers
+	rm -rf .tmp*
+	rm -rf .fpga*
+	rm -rf modules.order
