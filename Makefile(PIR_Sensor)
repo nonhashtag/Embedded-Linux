@@ -1,0 +1,23 @@
+obj-m	:= ext_pir1_sensor_driver.o
+
+KDIR	:=/root/work/achroimx6q/kernel
+PWD	:=$(shell pwd)
+APP:=ext_pir1_sensor
+
+all: driver app
+driver:
+	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules ARCH=arm
+app:
+	arm-none-linux-gnueabi-gcc -static -o ext_pir1_test ext_pir1_sensor_app.c
+
+install:
+	cp -a ext_pir1_sensor_driver.ko /root/work
+	cp -a ext_pir1_test /root/work
+clean:
+	rm -rf *.ko
+	rm -rf *.mod.*
+	rm -rf *.o
+	rm -rf ext_pir_test
+	rm -rf Module.symvers
+	rm -rf .tmp*
+	rm -rf modules.order
