@@ -12,7 +12,8 @@
 ## 2. 구성도
 
 ![image](https://user-images.githubusercontent.com/75101880/149145892-757ca3b3-fae9-439f-a107-d915e6488a5e.png)
- 본 시스템의 하드웨어 구성은 위의 구성도와 같이 이뤄져 있다.
+
+본 시스템의 하드웨어 구성은 위의 구성도와 같이 이뤄져 있다.
 
 Push_Switch 	: 타겟보드의 FPGA_Push_Switch는 9개의 버튼으로 구성되어 있지만, 본 시스템에서는 맨 아래의 3개에만 변수를 부여하고, 사용한다.
 
@@ -24,9 +25,36 @@ PIR_Sensor	: 기계 주변에 사람(위험 상황)이 감지되는지, 실시�
 
 Web_Cam	: 동작의 문제여부를 판단을 직접 눈으로 확인 할 수 있도록 하는 것을 목적으로 설치했으며, OpenCV 라이브러리를 이용하여 촬영, FrameBuffer를 이용하여 화면 송출을 한다.
 
-![image](https://user-images.githubusercontent.com/75101880/149145976-4cf56883-630b-433a-88c4-b7c63d2eb4b1.png)
 <기능구성>
+![image](https://user-images.githubusercontent.com/75101880/149145976-4cf56883-630b-433a-88c4-b7c63d2eb4b1.png)
 
-![image](https://user-images.githubusercontent.com/75101880/149146041-efcd8ac2-dfe9-43d7-9bf8-2589c6b1f50f.png)
+
 <디바이스 구성>
+![image](https://user-images.githubusercontent.com/75101880/149146041-efcd8ac2-dfe9-43d7-9bf8-2589c6b1f50f.png)
 
+
+## 3. 기능 설명
+
+ 동작중인 기계 주변에 사람이 감지되면, 이를 사고위험요소로 판단하여, 기계를 멈추는 것이 주요 기능이다.
+
+### FPGA
+-Push_Switch	: 우하향으로 7, 8, 9번째 버튼이 각각 모터의 좌회전, 정지, 우회전 동작을 실행시킨다.
+
+-Step_Motor	: 공장에서 기계가 동작한다는 것을 묘사하기 위한 장치이다. 동작은 Push_Switch 버튼 클릭으로 이뤄지며, 위험요소 감지 시 정지된다.
+
+-Buzzer		: 사고위험요소 발견 시 경고하기 위한 요소로, PIR_Sensor에서 사람이 감지되면 울린다.
+
+
+### Extra(외부 디바이스)
+-PIR_Sensor	: 인체가 감지되면, 프로그램의 메모리에 감지 데이터를 넘겨줌으로써 감지를 확인한다.
+
+-Web Cam	: 필요시 기계 주변을 사용자가 직접 확인할 수 있도록, 실시간 카메라 촬영 영상을 FrameBuffer를 통해서 송출하여, 화면에 출력한다.
+
+
+ 위의 장치별 설명을 보면, 사용자가 운용에 직접 관여 할 수 있는 부분은 Push_Switch 뿐이라는 것을 알 수 있다. 필요 시 위험감지 기능이 정상 동작하는지 테스트 하기 위해서, 모터를 동작시키고, 센서에 인체를 감지시키는 방식으로 직접 테스트 해볼 수도 있겠다.
+ 
+ 
+ ## 4. 순서도
+ ![image](https://user-images.githubusercontent.com/75101880/149146641-17d93be4-b847-405b-8ebd-054eb29f7562.png)
+ 
+  프로그램을 실행시키면, 프로세스를 2개로 나눠서, 하나는 영상송출(OpenCV,  FrameBuffer)의 기능을 수행한다. 다른 하나는 기계의 동작(Push_Switch, Step_Motor)과 위험 상황 감지(PIR_Sensor, Buzzer)의 기능을 수행한다. 각 프로세스는 서로의 동작이나 메모리 사용에 영향을 주지 않는다.
