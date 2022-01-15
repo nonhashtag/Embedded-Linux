@@ -15,6 +15,7 @@
 #include <opencv2/imgproc/imgproc_c.h>
 #include <opencv2/highgui/highgui_c.h>
 
+//디바이스 설정 및 경로선언
 #define FPGA_STEP_MOTOR_DEVICE "/dev/fpga_step_motor"
 #define FPGA_PUSH_SWITCH_DEVICE "/dev/fpga_push_switch"
 #define FPGA_BUZZER_DEVICE "/dev/fpga_buzzer"
